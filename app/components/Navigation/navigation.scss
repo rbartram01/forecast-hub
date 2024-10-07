@@ -1,0 +1,22 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.navigation-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+
+  .top-banner {
+    background-color: #150c0a;
+    display: flex;
+    height: 60px;
+    padding: 8px 40px;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 50px;
+    align-self: stretch;
+    color: #fff;
+  }
+}
