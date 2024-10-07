@@ -36,26 +36,19 @@ type weatherForecastProps = {
   }
 }
 
-
 export default function Header() {
-  const api = {
-    key: '828ed7caf80d496bb77131538240310',
-  }
-
   const [value, setValue] = useState('');
   const [weather, setWeather] = useState<weatherForecastProps | null>(null);
 
   const searchPressed = (event: { preventDefault: () => void }) => {
     event.preventDefault()
-    console.log("🚀 searchPressed:")
-    console.log("🚀 ~ value:", value)
-
-    fetch(`https://api.weatherapi.com/v1/forecast.json?q=${value}&days=6&key=${api.key}`)
+    fetch(`https://api.weatherapi.com/v1/forecast.json?q=${value}&days=6&key=${process.env.NEXT_PUBLIC_KEY}`)
       .then(res => res.json())
       .then(result => {
         console.log("🚀 ~ searchPressed ~ result:", result)
         setWeather(result);
       }
+        
     );
   }
 
@@ -66,9 +59,6 @@ export default function Header() {
     const formattedDate = dateObj.toLocaleDateString('en-GB', options);;
     return formattedDate;
   }
-
-
-console.log("🚀 ~ searchPressed ~ weather:", weather)
 
   return (
     <header>
@@ -82,31 +72,24 @@ console.log("🚀 ~ searchPressed ~ weather:", weather)
           </button>  
         </form> 
         
-          <p>{weather?.location?.region}</p>
-          <p>{weather?.current?.condition.text}</p>
-          <p>{weather?.current?.temp_c}°C</p>
-          {/* <p>{weather?.forecast.forecastday.}</p> */}
+        <div className='grid-container'>
+          {weather?.forecast?.forecastday.map((day, index) => (
+            <div key={index} className='grid-item'>
+              <h3>{convertDate(day?.date)}</h3>
+              <div className='day'>
+              <div className='day-icon'> 
+                  <Image src={`https:${day.day.condition.icon}`} alt={day.day.condition.text} width={50} height={50} />
+                </div>
 
-          <div className='grid-container'>
-            {weather?.forecast.forecastday.map((day, index) => (
-              <div key={index} className='grid-item'>
-                <h3>{convertDate(day?.date)}</h3>
-                <div className='day'>
-                  <div className='day-temp'>
-                    <p>{day.day.avgtemp_c}°C</p>
-                    <p>{day.day.maxtemp_c}°C</p>
-                  </div>
-
-                  <div className='day-icon'> 
-                    <Image src={`https:${day.day.condition.icon}`} alt={day.day.condition.text} width={60} height={60} />
-                  </div>
+                <div className='day-temp'>
+                  <p className='max-temp'>{day.day.maxtemp_c}°</p>
+                  <p className='avg-temp'>{day.day.avgtemp_c}°</p>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
       </section>
-
-
     </header>
   )
 }
